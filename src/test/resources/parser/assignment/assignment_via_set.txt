@@ -1,0 +1,12 @@
+Assembly File: a.asm
+  M68kStatementImpl(STATEMENT)
+    M68kAssignmentImpl(ASSIGNMENT)
+      M68kSymbolDefinitionImpl(SYMBOL_DEFINITION)
+        PsiElement(M68kTokenType.SYMBOLDEF)('FOO')
+      PsiWhiteSpace(' ')
+      PsiElement(M68kTokenType.EQU)('set')
+      PsiWhiteSpace(' ')
+      M68kRefExprImpl(REF_EXPR)
+        M68kSymbolReferenceImpl(SYMBOL_REFERENCE)
+          PsiElement(M68kTokenType.SYMBOL)('BAR')
+  PsiElement(M68kTokenType.EOL)('\n')

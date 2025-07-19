@@ -1,0 +1,90 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '1.17.1'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+    id 'jacoco'
+}
+
+group = 'de.platon42'
+version = '0.10'
+sourceCompatibility = 17
+targetCompatibility = 17
+
+repositories {
+    mavenCentral()
+}
+
+/*
+  To run tests in IntelliJ use these VM Options for run configuration
+  -ea -Didea.system.path=build/idea-sandbox/system-test -Didea.config.path=build/idea-sandbox/config-test -Didea.plugins.path=build/idea-sandbox/plugins-test
+ */
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.2'
+    testImplementation "org.jetbrains.kotlin:kotlin-test"
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect"
+    testImplementation 'org.junit.platform:junit-platform-launcher:1.11.2'
+//    testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
+}
+
+intellij {
+    setVersion("2022.3") // LATEST-EAP-SNAPSHOT
+    setUpdateSinceUntilBuild(false)
+//    setPlugins(["com.intellij.java"])
+}
+
+runPluginVerifier {
+    ideVersions = ["IC-203.6682.168", "IC-233.14015.106", // 2020.3 - 2023.3
+                   "CL-203.8084.11", "CL-233.14015.92"] // 2020.3 - 2023.3
+
+    downloadDir = System.getProperty("user.home") + "/.gradle/caches/modules-2/files-2.1/com.jetbrains.intellij.idea/verifier"
+}
+
+patchPluginXml {
+    setChangeNotes("""
+  <h4>V0.10 (20-Feb-24)</h4>
+    <ul>
+    <li>Decided to release some features that have been sitting on my harddrive for almost two years, but never got released,
+        because I was unable to get that damn formatter working in a way that was acceptable (the API and the docs are easily one
+        the worst abominations I've come across).
+    <li>Maintenance. Updated all dependencies to the latest versions.
+    <li>New: Added semantic highlighting. Currently available for data and address registers and local labels.
+    <li>Bugfix: addq/subq for address register stated it would affect the condition codes, which it in fact doesn't.
+    <li>New: Added simple custom navigation bar.
+    <li>New: Added folding support for functions and macro definitions.
+    <li>New: Added assembler directives to code completion (only lower-case except for other directives like IF
+        and MACRO, which are only suggested for upper-case).
+    </ul>
+  <p>Full changelog available at <a href="https://git.platon42.de/chrisly42/mc68000-asm-plugin#changelog">Gitea project site</a>.</p>
+""")
+}
+
+sourceSets.main.java.srcDirs('src/main/gen', 'src/main/java')
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    runIde {
+        jvmArgs '--add-exports', 'java.base/jdk.internal.vm=ALL-UNNAMED'
+    }
+}
+
+jacoco {
+    toolVersion = '0.8.8'
+}
+
+jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+    }
+}
+
+publishPlugin {
+    setToken(intellijPublishToken)
+}

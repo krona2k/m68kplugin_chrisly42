@@ -1,0 +1,558 @@
+{
+    parserClass="de.platon42.intellij.plugins.m68k.parser.M68kParser"
+    parserUtilClass="de.platon42.intellij.plugins.m68k.parser.M68kParserUtilBase"
+
+    implements = "de.platon42.intellij.plugins.m68k.psi.M68kPsiElement"
+    extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+    psiClassPrefix="M68k"
+    psiImplClassSuffix="Impl"
+    psiPackage="de.platon42.intellij.plugins.m68k.psi"
+    psiImplPackage="de.platon42.intellij.plugins.m68k.psi.impl"
+    psiImplUtilClass="de.platon42.intellij.plugins.m68k.psi.M68kPsiImplUtil"
+
+//    elementTypeFactory="de.platon42.intellij.plugins.m68k.parser.M68kParserDefinition.createType"
+//    tokenTypeFactory="de.platon42.intellij.plugins.m68k.parser.M68kParserDefinition.createTokenType"
+
+    elementTypeHolderClass="de.platon42.intellij.plugins.m68k.psi.M68kTypes"
+    elementTypeClass="de.platon42.intellij.plugins.m68k.psi.M68kElementType"
+    tokenTypeClass="de.platon42.intellij.plugins.m68k.psi.M68kTokenType"
+
+    name(".*_expr")='expression'
+    extends(".*_expr")=expr
+
+    name(".*AddressingMode")='AddressingMode'
+    extends(".*AddressingMode")=AddressingMode
+
+    name(".*Register")='Register'
+
+    consumeTokenMethod(".*_expr|expr|.*AddressingMode")="consumeTokenFast"
+
+    tokens = [
+        EOL             = 'regexp:\R'
+        WHITE_SPACE     = 'regexp:\p{Blank}+'
+
+//        EQU             = 'equ'
+//
+//        EVEN_TAG        = 'even'
+//        CNOP_TAG        = 'cnop'
+//        SECTION_TAG     = 'section'
+//
+//        INCLUDE_TAG     = 'include'
+//        INCBIN_TAG      = 'incbin'
+//
+//        IF_TAG          = 'regexp:(if\p{Alpha}*)'
+//        ELSE_TAG        = 'else'
+//        ENDC_TAG        = 'endc'
+//        MACRO_TAG       = 'macro'
+//        MACRO_END_TAG   = 'endm'
+//        REPT_TAG        = 'rept'
+//        REPT_END_TAG    = 'endr'
+//        FAIL_TAG        = 'fail'
+//        END_TAG         = 'end'
+
+//        AREG            = 'regexp:((a[0-7])|sp)'
+//        DREG            = 'regexp:(d[0-7])'
+//        PC              = 'pc'
+//        REG_CCR         = 'ccr'
+//        REG_SR          = 'sr'
+//        REG_USP         = 'usp'
+//        REG_VBR         = 'vbr'
+
+//        ASSIGNMENT      = 'regexp:((\p{Alpha}|_)(\p{Alnum}|_)*)((\p{Blank}+equ\p{Blank})|=)'
+//        LOCAL_LABEL_OC  = 'regexp:(!(\p{Blank}+)\.(\p{Alpha}|_)(\p{Alnum}|_)*:?)|(!(\p{Blank}+)(\p{Alpha}|_)(\p{Alnum}|_)*\$:?)|((\p{Blank}*)?\.(\p{Alpha}|_)(\p{Alnum}|_)*:)|((\p{Blank}*)?(\p{Alpha}|_)(\p{Alnum}|_)*\$:)|(\.(\p{Alpha}|_)(\p{Alnum}|_)*:)|((\p{Alpha}|_)(\p{Alnum}|_)*\$:)'
+//        GLOBAL_LABEL_OC = 'regexp:(!(\p{Blank}+)(\p{Alpha}|_)(\p{Alnum}|_)*:?:?)|((\p{Blank}*)?(\p{Alpha}|_)(\p{Alnum}|_)*::?)'
+
+//        MNEMONIC        = 'regexp:((\p{Alpha})+)'
+//        SYMBOL          = 'regexp:((\p{Alpha}|_)(\p{Alnum}|_)*)'
+//        OPSIZE_BS       = 'regexp:(\.[bs])'
+//        OPSIZE_WL       = 'regexp:(\.[wl])'
+
+//        BINARY          = 'regexp:(%[01]+)'
+//        HEXADECIMAL     = 'regexp:(\$[0-9a-f]+)'
+//        OCTAL           = 'regexp:(@[0-7]+)'
+//        DECIMAL         = 'regexp:([0-9]+)'
+
+//        STRINGLIT       = "regexp:(`([^`\\]|\\.)*`|'([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")|<([^`\\]|\\.)*>"
+
+//        COLON           = ':'
+//        SEMICOLON       = ';'
+//        SQUARE_L        = '['
+//        SQUARE_R        = ']'
+//        ROUND_L         = '('
+//        ROUND_R         = ')'
+//        SEPARATOR       = ','
+//        DOT             = '.'
+//        HASH            = '#'
+//        DOLLAR          = '$'
+//
+//        OP_ASSIGN       = '='
+//
+//        OP_UNARY_NOT    = '!'
+//        OP_UNARY_COMPL  = '~'
+//
+//        OP_PLUS         = '+'
+//        OP_MINUS        = '-'
+//        OP_AR_MUL       = '*'
+//        OP_AR_DIV       = '/'
+//        OP_AR_MOD       = '%'
+//        OP_AR_SHIFT_L   = '<<'
+//        OP_AR_SHIFT_R   = '>>'
+//        OP_BITWISE_AND  = '&'
+//        OP_BITWISE_OR   = '|'
+//        OP_BITWISE_XOR  = '^'
+//        OP_LOGICAL_AND  = '&&'
+//        OP_LOGICAL_OR   = '||'
+//
+//        OP_CMP_EQ       = '=='
+//        OP_CMP_LT       = '<'
+//        OP_CMP_GT       = '>'
+//        OP_CMP_GT_EQ    = '>='
+//        OP_CMP_LT_EQ    = '<='
+//        OP_CMP_NOT_EQ   = '!='
+//        OP_CMP_NOT_EQ2  = '<>'
+
+        COMMENT         = 'regexp:(\p{Blank}*?[;*].*+)'//|(!\s#+.*+)'
+//        EOL_COMMENT     = 'regexp:((\p{Blank}+;.*?)|(\p{Blank}+\.*+))'
+    ]
+}
+
+M68kFile ::= line*
+
+private line ::= !<<eof>> (MacroDefinition | statement) (<<eof>>|EOL)
+
+statement ::= (Assignment
+            | LabelInsts)
+            {pin = 1 recoverWhile = statement_recover}
+
+private statement_recover ::= !(EOL) { consumeTokenMethod = "consumeTokenFast" }
+
+SymbolDefinition ::= SYMBOLDEF {
+    implements = "de.platon42.intellij.plugins.m68k.psi.M68kNamedElement"
+    mixin = "de.platon42.intellij.plugins.m68k.psi.M68kSymbolDefinitionMixin"
+    elementTypeFactory = "de.platon42.intellij.plugins.m68k.stubs.M68kStubElementTypeFactory.stubFactory"
+    stubClass = "de.platon42.intellij.plugins.m68k.stubs.M68kSymbolDefinitionStub"
+    methods = [getName setName getNameIdentifier]
+}
+
+Assignment ::= SymbolDefinition COLON? (OP_ASSIGN|EQU) expr
+
+private LabelInsts ::= LabelWithInstruction | LabelOnly | Instruction
+
+private LabelOnly ::= Label
+private LabelWithInstruction ::= Label Instruction
+
+LocalLabel ::= LOCAL_LABEL_DEF COLON? {
+    name = "local label"
+    implements = "de.platon42.intellij.plugins.m68k.psi.M68kNamedElement"
+    mixin = "de.platon42.intellij.plugins.m68k.psi.M68kLocalLabelMixin"
+    methods = [getName setName getNameIdentifier]
+}
+
+GlobalLabel ::= GLOBAL_LABEL_DEF COLON* {
+    name = "global label"
+    implements = "de.platon42.intellij.plugins.m68k.psi.M68kNamedElement"
+    mixin = "de.platon42.intellij.plugins.m68k.psi.M68kGlobalLabelMixin"
+    elementTypeFactory = "de.platon42.intellij.plugins.m68k.stubs.M68kStubElementTypeFactory.stubFactory"
+    stubClass = "de.platon42.intellij.plugins.m68k.stubs.M68kGlobalLabelStub"
+    methods = [getName setName getNameIdentifier]
+}
+
+private Label ::= LocalLabel | GlobalLabel
+
+OperandSize ::= (OPSIZE_BS|OPSIZE_W|OPSIZE_L) {
+    name = ".s|.b|.w|.l"
+    methods = [getSize]
+}
+
+AddressSize ::= (OPSIZE_W|OPSIZE_L) { name = ".w|.l" }
+DataWidth ::= (OPSIZE_W|OPSIZE_L) { name = ".w|.l" }
+
+AsmOp ::= MNEMONIC OperandSize? {
+    name = "mnemonic"
+    methods = [getMnemonic getOpSize]
+}
+
+PreprocessorKeyword ::= (DATA_DIRECTIVE | OTHER_DIRECTIVE)
+
+PreprocessorDirective ::= PreprocessorKeyword PreprocessorOperands? {
+    mixin = "de.platon42.intellij.plugins.m68k.psi.M68kPreprocessorDirectiveMixin"
+}
+
+MacroPlainLine ::= MACRO_LINE
+MacroNameDefinition ::= MACRO_NAME
+
+MacroDefinition ::= ((MacroNameDefinition COLON? MACRO_TAG)|(MACRO_TAG MacroNameDefinition)) MacroPlainLine* MACRO_END_TAG {
+    pin = 1
+    name = "macro definition"
+    implements = "de.platon42.intellij.plugins.m68k.psi.M68kNamedElement"
+    mixin = "de.platon42.intellij.plugins.m68k.psi.M68kMacroDefinitionMixin"
+    elementTypeFactory = "de.platon42.intellij.plugins.m68k.stubs.M68kStubElementTypeFactory.stubFactory"
+    stubClass = "de.platon42.intellij.plugins.m68k.stubs.M68kMacroDefinitionStub"
+    methods = [getName setName getNameIdentifier]
+}
+
+
+MacroCall ::= MACRO_INVOCATION PlainOperands? {
+    mixin = "de.platon42.intellij.plugins.m68k.psi.M68kMacroCallMixin"
+    methods = [getMacroName]
+}
+
+AsmInstruction ::= AsmOp AsmOperands?
+private Instruction ::= AsmInstruction | MacroCall | PreprocessorDirective
+//external Instruction ::= parseMacroCallOrAsmInstruction
+
+private AsmOperands ::= AddressingMode (SEPARATOR AddressingMode)?
+
+private PreprocessorOperands ::= PreprocessorOperand (SEPARATOR PreprocessorOperand)*
+private PreprocessorOperand ::= expr
+
+private PlainOperands ::= (expr|AddressingMode) (SEPARATOR (expr|AddressingMode))*
+
+// TODO This should probably be a ILazyParseableElementType, no idea how to implement that yet
+SymbolReference ::= SYMBOL {
+    mixin = "de.platon42.intellij.plugins.m68k.psi.M68kSymbolReferenceMixin"
+    methods = [getSymbolName isLocalLabelRef]
+//    implements = "com.intellij.model.psi.PsiExternalReferenceHost"
+}
+
+ProgramCounterReference ::= CURRENT_PC_SYMBOL
+
+DataRegister ::= DREG {
+    name = "data register"
+    extends = Register
+}
+
+AddressRegister ::= AREG | REG_SP {
+    name = "address register"
+    extends = Register
+}
+
+SpecialRegister ::= REG_CCR | REG_SR | REG_USP | REG_VBR | REG_SFC | REG_DFC {
+    name = "special register"
+    extends = Register
+}
+
+Register ::= DataRegister | AddressRegister | SpecialRegister
+
+private DataOrAddressRegister ::= DataRegister | AddressRegister { name = "data or address register"}
+
+BaseDisplacement ::= expr DataWidth?
+OuterDisplacement ::= expr DataWidth?
+
+IndexRegister ::= DataOrAddressRegister DataWidth? (OP_AR_MUL IndexScale)?
+{
+    name = "index register"
+    methods = [
+        indexRegister = "DataOrAddressRegister"
+        isLongWidth
+    ]
+}
+
+IndexScale ::= expr
+{
+    name = "scale value"
+    methods = [
+        indexScale = "expr"
+    ]
+}
+
+AddressingMode ::= ImmediateData
+                | AddressRegisterIndirectPreDecAddressingMode
+                | AddressRegisterIndirectPostIncAddressingMode
+                | AddressRegisterIndirectAddressingMode
+                | AddressRegisterIndirectWithDisplacementNewAddressingMode
+                | ProgramCounterIndirectWithDisplacementNewAddressingMode
+                | AddressRegisterIndirectWithIndexNewAddressingMode
+                | ProgramCounterIndirectWithIndexNewAddressingMode
+                | AddressRegisterIndirectWithDisplacementOldAddressingMode
+                | ProgramCounterIndirectWithDisplacementOldAddressingMode
+                | AddressRegisterIndirectWithIndexOldAddressingMode
+                | ProgramCounterIndirectWithIndexOldAddressingMode
+                | AddressRegisterIndirectWithIndexBaseDisplacementAddressingMode
+                | ProgramCounterIndirectWithIndexBaseDisplacementAddressingMode
+                | MemoryIndirectAddressingMode
+                | ProgramCounterMemoryIndirectAddressingMode
+                | MemoryIndirectPostIndexedAddressingMode
+                | ProgramCounterMemoryIndirectPostIndexedAddressingMode
+                | MemoryIndirectPreIndexedAddressingMode
+                | ProgramCounterMemoryIndirectPreIndexedAddressingMode
+                | SpecialRegisterDirectAddressingMode
+                | DataRegisterDirectAddressingMode
+                | AddressRegisterDirectAddressingMode
+                | RegisterListAddressingMode
+                | AbsoluteAddressAddressingMode
+
+SpecialRegisterDirectAddressingMode ::= SpecialRegister
+DataRegisterDirectAddressingMode ::= DataRegister !(OP_MINUS|OP_AR_DIV)
+AddressRegisterDirectAddressingMode ::= AddressRegister !(OP_MINUS|OP_AR_DIV)
+AddressRegisterIndirectAddressingMode ::= ROUND_L AddressRegister ROUND_R !OP_PLUS { implements = "de.platon42.intellij.plugins.m68k.psi.M68kWithAddressRegisterIndirect" }
+AddressRegisterIndirectPostIncAddressingMode ::= ROUND_L AddressRegister ROUND_R OP_PLUS { implements = "de.platon42.intellij.plugins.m68k.psi.M68kWithAddressRegisterIndirect" }
+AddressRegisterIndirectPreDecAddressingMode ::= OP_MINUS ROUND_L AddressRegister ROUND_R { implements = "de.platon42.intellij.plugins.m68k.psi.M68kWithAddressRegisterIndirect" }
+
+AddressRegisterIndirectWithDisplacementOldAddressingMode ::= expr ROUND_L AddressRegister ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithAddressRegisterIndirect"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithDisplacement"
+    ]
+    methods = [
+        displacement = "expr"
+    ]
+}
+
+AddressRegisterIndirectWithDisplacementNewAddressingMode ::= ROUND_L expr SEPARATOR AddressRegister ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithAddressRegisterIndirect"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithDisplacement"
+    ]
+    methods = [
+        displacement = "expr"
+    ]
+}
+
+AddressRegisterIndirectWithIndexOldAddressingMode ::= expr? ROUND_L AddressRegister SEPARATOR IndexRegister ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithAddressRegisterIndirect"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithIndexRegister"
+    ]
+    methods = [
+        displacement = "expr"
+    ]
+}
+
+AddressRegisterIndirectWithIndexNewAddressingMode ::= ROUND_L (expr SEPARATOR)? AddressRegister SEPARATOR IndexRegister ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithAddressRegisterIndirect"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithIndexRegister"
+    ]
+    methods = [
+        displacement = "expr"
+    ]
+}
+
+private internalBaseDisplacementOption1 ::= (BaseDisplacement SEPARATOR)? (AddressRegister SEPARATOR)? IndexRegister
+private internalBaseDisplacementOption2 ::= (BaseDisplacement SEPARATOR)? AddressRegister (SEPARATOR IndexRegister)?
+private internalBaseDisplacementOption3 ::= BaseDisplacement (SEPARATOR AddressRegister)? (SEPARATOR IndexRegister)?
+
+AddressRegisterIndirectWithIndexBaseDisplacementAddressingMode ::= ROUND_L (internalBaseDisplacementOption1|internalBaseDisplacementOption2|internalBaseDisplacementOption3)? ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOptionalAddressRegisterIndirect"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithBaseDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOptionalIndexRegister"
+    ]
+    methods = [
+        baseDisplacement = "BaseDisplacement"
+    ]
+}
+
+ProgramCounterIndirectWithIndexBaseDisplacementAddressingMode ::= ROUND_L (BaseDisplacement SEPARATOR)? PC (SEPARATOR IndexRegister)? ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithBaseDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOptionalIndexRegister"
+    ]
+    methods = [
+        baseDisplacement = "BaseDisplacement"
+    ]
+}
+
+MemoryIndirectAddressingMode ::= ROUND_L SQUARE_L (BaseDisplacement SEPARATOR)? AddressRegister SQUARE_R (SEPARATOR OuterDisplacement)? ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithAddressRegisterIndirect"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithBaseDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOuterDisplacement"
+    ]
+    methods = [
+        baseDisplacement = "BaseDisplacement"
+        outerDisplacement = "OuterDisplacement"
+    ]
+}
+
+private internalMemoryIndirectPostIndexedOption1 ::= (BaseDisplacement SEPARATOR)? AddressRegister
+private internalMemoryIndirectPostIndexedOption2 ::= BaseDisplacement (SEPARATOR AddressRegister)?
+
+MemoryIndirectPostIndexedAddressingMode ::= ROUND_L (SQUARE_L (internalMemoryIndirectPostIndexedOption1|internalMemoryIndirectPostIndexedOption2) SQUARE_R SEPARATOR)? IndexRegister (SEPARATOR OuterDisplacement)? ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOptionalAddressRegisterIndirect"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithBaseDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithIndexRegister"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOuterDisplacement"
+    ]
+    methods = [
+        baseDisplacement = "BaseDisplacement"
+        outerDisplacement = "OuterDisplacement"
+    ]
+}
+
+MemoryIndirectPreIndexedAddressingMode ::= ROUND_L SQUARE_L (BaseDisplacement SEPARATOR)? (AddressRegister SEPARATOR)? IndexRegister SQUARE_R (SEPARATOR OuterDisplacement)? ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOptionalAddressRegisterIndirect"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithBaseDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithIndexRegister"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOuterDisplacement"
+    ]
+    methods = [
+        baseDisplacement = "BaseDisplacement"
+        outerDisplacement = "OuterDisplacement"
+    ]
+}
+
+ProgramCounterIndirectWithDisplacementOldAddressingMode ::= (ROUND_L PC ROUND_R) | (expr ROUND_L PC ROUND_R)
+{
+    implements = ["de.platon42.intellij.plugins.m68k.psi.M68kWithDisplacement"]
+    methods = [
+        displacement = "expr"
+    ]
+}
+
+ProgramCounterIndirectWithDisplacementNewAddressingMode ::= ROUND_L expr SEPARATOR PC ROUND_R
+{
+    implements = ["de.platon42.intellij.plugins.m68k.psi.M68kWithDisplacement"]
+    methods = [
+        displacement = "expr"
+    ]
+}
+
+ProgramCounterIndirectWithIndexOldAddressingMode ::= expr? ROUND_L PC SEPARATOR IndexRegister ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithIndexRegister"
+    ]
+    methods = [
+        displacement = "expr"
+    ]
+}
+
+ProgramCounterIndirectWithIndexNewAddressingMode ::= ROUND_L (expr SEPARATOR)? PC SEPARATOR IndexRegister ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithIndexRegister"
+    ]
+    methods = [
+        displacement = "expr"
+    ]
+}
+
+ProgramCounterMemoryIndirectAddressingMode ::= ROUND_L SQUARE_L (BaseDisplacement SEPARATOR)? PC SQUARE_R (SEPARATOR OuterDisplacement)? ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithBaseDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOuterDisplacement"
+    ]
+    methods = [
+        baseDisplacement = "BaseDisplacement"
+        outerDisplacement = "OuterDisplacement"
+    ]
+}
+
+ProgramCounterMemoryIndirectPostIndexedAddressingMode ::= ROUND_L (SQUARE_L (BaseDisplacement SEPARATOR)? PC SQUARE_R SEPARATOR)? IndexRegister (SEPARATOR OuterDisplacement)? ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithBaseDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithIndexRegister"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOuterDisplacement"
+    ]
+    methods = [
+        baseDisplacement = "BaseDisplacement"
+        outerDisplacement = "OuterDisplacement"
+    ]
+}
+
+ProgramCounterMemoryIndirectPreIndexedAddressingMode ::= ROUND_L SQUARE_L (BaseDisplacement SEPARATOR)? PC SEPARATOR IndexRegister SQUARE_R (SEPARATOR OuterDisplacement)? ROUND_R
+{
+    implements = [
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithBaseDisplacement"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithIndexRegister"
+        "de.platon42.intellij.plugins.m68k.psi.M68kWithOuterDisplacement"
+    ]
+    methods = [
+        baseDisplacement = "BaseDisplacement"
+        outerDisplacement = "OuterDisplacement"
+    ]
+}
+
+AbsoluteAddressAddressingMode ::= expr AddressSize? !ROUND_L
+
+RegisterRange ::= (DataRegister OP_MINUS DataRegister) | (AddressRegister OP_MINUS AddressRegister) | (DataRegister OP_MINUS AddressRegister) {
+    name = "register range"
+    methods = [
+        startRegister = "Register[0]"
+        endRegister = "Register[1]"
+    ]
+}
+
+RegisterListAddressingMode ::= (RegisterRange|DataOrAddressRegister) (OP_AR_DIV (RegisterRange|DataOrAddressRegister))*
+{
+    name = "register list"
+    methods = [ getRegisters ]
+}
+
+ImmediateData ::= HASH expr {
+    name = "immediate data"
+    extends = AddressingMode
+}
+
+expr ::= binary_logical_or_expr
+        | binary_logical_and_expr
+        | binary_cmp_eq_ne_group
+        | binary_cmp_diff_group
+        | binary_addsub_group
+        | binary_muldiv_group
+        | binary_bitwise_or_expr
+        | binary_bitwise_xor_expr
+        | binary_bitwise_and_expr
+        | binary_shift_group
+        | unary_group
+        | primary_group { name = "expression" }
+//        | macrobrace_expr
+
+// private rules to define operators with the same priority
+private unary_group ::= unary_plus_expr|unary_minus_expr|unary_not_expr|unary_compl_expr
+private binary_shift_group ::= binary_shift_l_expr|binary_shift_r_expr
+private binary_muldiv_group ::= binary_mul_expr|binary_div_expr|binary_mod_expr
+private binary_addsub_group ::= binary_add_expr|binary_sub_expr
+private binary_cmp_diff_group ::= binary_cmp_lt_expr|binary_cmp_le_expr|binary_cmp_gt_expr|binary_cmp_ge_expr
+private binary_cmp_eq_ne_group ::= binary_cmp_eq_expr|binary_cmp_ne_expr
+private primary_group ::= ref_expr|literal_expr|paren_expr
+
+unary_plus_expr ::= OP_PLUS expr
+unary_minus_expr ::= OP_MINUS expr
+unary_not_expr ::= OP_UNARY_NOT expr
+unary_compl_expr ::= OP_UNARY_COMPL expr
+binary_shift_l_expr ::= expr OP_AR_SHIFT_L expr
+binary_shift_r_expr ::= expr OP_AR_SHIFT_R expr
+binary_bitwise_and_expr ::= expr OP_BITWISE_AND expr
+binary_bitwise_xor_expr ::= expr OP_BITWISE_XOR expr
+binary_bitwise_or_expr ::= expr (OP_BITWISE_OR|OP_UNARY_NOT) expr
+binary_mul_expr ::= expr OP_AR_MUL expr
+binary_div_expr ::= expr OP_AR_DIV expr
+binary_mod_expr ::= expr OP_AR_MOD expr
+binary_add_expr ::= expr OP_PLUS expr
+binary_sub_expr ::= expr OP_MINUS expr
+binary_cmp_lt_expr ::= expr OP_CMP_LT expr
+binary_cmp_le_expr ::= expr OP_CMP_LT_EQ expr
+binary_cmp_gt_expr ::= expr OP_CMP_GT expr
+binary_cmp_ge_expr ::= expr OP_CMP_GT_EQ expr
+binary_cmp_eq_expr ::= expr OP_CMP_EQ expr
+binary_cmp_ne_expr ::= expr OP_CMP_NOT_EQ expr
+binary_logical_and_expr ::= expr OP_LOGICAL_AND expr
+binary_logical_or_expr ::= expr OP_LOGICAL_OR expr
+
+//macrobrace_expr ::= OP_CMP_LT expr OP_CMP_GT
+paren_expr ::= ROUND_L expr ROUND_R //{pin=1 recoverWhile=statement_recover}
+ref_expr ::= SymbolReference|ProgramCounterReference
+literal_expr ::= BINARY|DECIMAL|HEXADECIMAL|OCTAL|STRINGLIT {
+    implements = "com.intellij.psi.PsiLiteralValue"
+    mixin = "de.platon42.intellij.plugins.m68k.psi.M68kLiteralExprMixin"
+}
